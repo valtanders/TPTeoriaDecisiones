@@ -24,7 +24,7 @@ def nuevo_usuario(request):
             user.first_name = firstname
             user.last_name = lastname
             user.save()
-            return render_to_response('index', {'user': user})
+            return render_to_response('index.html', {'user': user})
         except Exception as e:
             error = 'El usuario ya se encuentra registrado...'
             return render_to_response('registrar.html', {'error': error})
