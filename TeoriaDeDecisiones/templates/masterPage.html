@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {# Load the tag library #}
+    {% load bootstrap3 %}
+
+    {# Load CSS and JavaScript #}
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery=1 %}
+
+    {# Display django.contrib.messages as Bootstrap alerts #}
+    {% bootstrap_messages %}
+    <meta charset="UTF-8">
+    <title>Eventos</title>
+    <link rel="stylesheet" type="text/css"
+          href="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.1/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="UTF-8"
+            src="http://ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.1/jquery.dataTables.min.js"></script>
+
+    {% block Head %}
+    {% endblock %}
+    <script>
+        $(document).ready(function () {
+            $('#error').text('{{ error }}').show().fadeOut(5000);
+            if ("{{ error }}" != "") {
+                zoomPopUp();
+                $('#msg').text('{{ error }}');
+            }
+        });
+
+        function zoomPopUp() {
+            $('#popup').fadeIn('slow');
+            $('#popup').fadeOut(5000);
+            return false;
+        }
+        ;
+    </script>
+    <style>
+        #contenedor {
+        }
+
+        #cabecera {
+        }
+
+        #izq {
+            background-color: darkred;
+            margin-top: 5%;
+            float: left;
+            width: 15%;
+            height: 1000px;
+        }
+
+        #contenido {
+        {#            background-image: url("static/Imagenes/fondo.jpg");#} margin-top: 3%;
+            float: right;
+            width: 85%;
+            height: 1000px;
+        }
+
+        #pie {
+            clear: both;
+        }
+
+        #popup {
+            text-align: center;
+            vertical-align: middle;
+            margin: 0px auto;
+            margin-top: 200px;
+            margin-left: 30%;
+            z-index: 999;
+            position: fixed;
+            border-radius: 4px;
+            background-color: #666666;
+            box-shadow: 0 2px 5px #AAFF99;
+        }
+
+        #msg {
+            color: red;
+            border-bottom: 1px solid #48484B;
+        {#            margin-top: 10%;#}{#            margin-left: 10%;#}
+
+        }
+    </style>
+
+</head>
+<body>
+<div id="contenedor">
+    <div id="popup" style="display: none;">
+        <h1 id="msg"></h1>
+    </div>
+    <div id="cabecera">
+        <nav class="navbar navbar-fixed-top">
+            <nav class="navbar navbar-default">
+                <div class="container-fluid">
+                    <div class="navbar-right">
+                        {% if user.is_authenticated %}
+                            <button class="navbar-btn btn-primary " type="button" name="lOut"
+                                    onclick="location.href = '{% url "logOut" %}'">Log Out
+                            </button>
+                        {% else %}
+                            <form class="navbar-form" action="logIn" method="post">
+                                <label for="inputUsuario">Usuario:</label>
+                                <input type="text" id="inputUsuario" name="username" class="form-control"
+                                       placeholder="Ingrese usuario" required autofocus>
+                                <label for="inputPassword">Contraseña: </label>
+                                <input type="password" name="password" id="inputPassword" class="form-control"
+                                       placeholder="Contraseña" required>
+                                <button class="navbar-btn btn-primary " type="submit" name="lIn">Log In</button>
+                                <button class="navbar-btn btn-primary " type="button" name="register"
+                                        onclick="location.href = '{% url "registro" %}'">Register
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="{% url 'index' %}"><h2 style="margin-top: 0px;"
+                                                                             class="navbar-header">
+                            Creacion de Eventos</h2></a>
+                    </div>
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav navbar-left ">
+                            {% if user.is_authenticated %}
+                                <li class="dropdown">
+                                    <a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button"
+                                       aria-haspopup="true" aria-expanded="false">Herramientas<span
+                                            class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li role="separator" class="divider"></li>
+                                        <li><a href= {% url 'eventos' %}>ABM Eventos</a></li>
+                                        {% if user.is_staff %}
+                                            <li><a href= {% url 'administrador' %}>Administrador</a></li>
+                                        {% endif %}
+                                        <li role="separator" class="divider"></li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </nav>
+    </div>
+    <div id="izq">
+        <img src="static/Imagenes/publi.gif" border="0" width="180" height="800" alt="" class="img_ad">
+    </div>
+    <div id="contenido">
+        {% block Contenido %}
+        {% endblock %}
+    </div>
+    <div id="pie">
+
+    </div>
+</div>
+</body>
+</html>
