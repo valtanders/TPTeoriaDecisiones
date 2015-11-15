@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, render_to_response
@@ -63,7 +64,7 @@ def user_login(request, user=None):
 @csrf_exempt
 def index(request):
     # pdb.set_trace()
-    return render_to_response('index.html')
+    return render_to_response('index.html', {'user': request.user})
 
 
 @csrf_exempt
