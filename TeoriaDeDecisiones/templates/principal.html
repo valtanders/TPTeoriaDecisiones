@@ -1,0 +1,41 @@
+{% extends 'masterPage.html' %}
+
+{% block Contenido %}
+    <div class="row">
+        <div class="col-md-6 col-sm-offset-3">
+            <div class="page-header">
+                <h1>Ingreso de Datos</h1>
+            </div>
+            <form method="post" action="registrar">
+                {% csrf_token %}
+                <div class="col-md-12">
+                    <div class="form-group col-md-2">
+                        <label for="input_alternativa">Altenativas: </label>
+                        <input type="text" name="input_alterativa" value="" id="id_alternativa" class="form-control"
+                               size="13"
+                               required autofocus>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <button id="registrar" class="btn btn-primary " type="submit" name="registrar">Registrar
+                        </button>
+                    </div>
+
+                </div>
+                <div class="col-md-12">
+                    <div class="form-group col-md-2">
+                        <label for="input_consecuencia">Apellido: </label>
+                        <input type="text" name="input_consecuencia" value="" id="id_consecuencia" class="form-control"
+                               size="13"
+                               required>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <button id="registrar" class="btn btn-primary " type="submit" name="registrar">Registrar
+                        </button>
+                    </div>
+                </div>
+                <h3 id="error" align="center"></h3>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
