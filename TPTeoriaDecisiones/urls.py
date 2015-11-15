@@ -17,7 +17,10 @@ from django.conf.urls import include, url
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^$', 'TeoriaDeDecisiones.views.index',name='index'),
+    url(r'^$', 'TeoriaDeDecisiones.views.index', name='index'),
     url(r'^login$', 'TeoriaDeDecisiones.views.user_login', name='login'),
+    url(r'^registrar$', 'TeoriaDeDecisiones.views.nuevo_usuario', name='registrar'),
+    url(r'^redirect$', 'TeoriaDeDecisiones.views.redirect_registro', name='redirect'),
+    url(r'^logout$', 'TeoriaDeDecisiones.views.user_logout', name='logout'),
     url(r'^admin', include(admin.site.urls)),
 ]
