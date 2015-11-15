@@ -9,32 +9,31 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 @csrf_exempt
-def user_login(request, user=None):
-    error = ''
-    if request.method == 'POST':
+def user_login(request,user=None):
+    error=''
+    if request.method=='POST':
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
-        # pdb.set_trace()
+        #pdb.set_trace()
         if user is not None:
             if user.is_active:
                 login(request, user)
                 if user.is_staff:
-                    return HttpResponseRedirect('admin')
+                	return HttpResponseRedirect('admin')
                 return HttpResponseRedirect(reverse('index'))
-                # Redirect to a success page.
+                #Redirect to a success page.
             else:
-                error = 'Cuenta desactivada'
-                return render_to_response('index.html', {'error': error})
+	       		error='Cuenta desactivada'
+           		return render_to_response('principal/principal.html', {'error': error})
                 # Return a 'disabled account' error message
         else:
-            error = 'Usuario y/o clave incorrecta'
-            return render_to_response('registrar.html', {'error': error})
+            error='Usuario y/o clave incorrecta'
+            return render_to_response('registration/registrar.html', {'error': error})
             # Return an 'invalid login' error message.
-    return render_to_response('index.html', {'error': error})
-
+    return render_to_response('principal/principal.html', {'error': error})
 
 @csrf_exempt
 def index(request):
-    # pdb.set_trace()
-    return render_to_response('index.html')
+	#pdb.set_trace()
+	return render_to_response('index.html')
