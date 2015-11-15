@@ -19,7 +19,7 @@
 
     {% block Head %}
     {% endblock %}
-    <script>
+    <!-- <script>
         $(document).ready(function () {
             $('#error').text('{{ error }}').show().fadeOut(5000);
             if ("{{ error }}" != "") {
@@ -34,7 +34,7 @@
             return false;
         }
         ;
-    </script>
+    </script> -->
     <style>
         #contenedor {
         }
@@ -95,7 +95,7 @@
                     <div class="navbar-right">
                         {% if user.is_authenticated %}
                             <button class="navbar-btn btn-primary " type="button" name="lOut"
-                                    onclick="location.href = '{% url "logOut" %}'">Log Out
+                                    onclick="location.href = '{% url "logout" %}'">Log Out
                             </button>
                         {% else %}
                             <form class="navbar-form" action="login" method="post">
@@ -107,7 +107,7 @@
                                        placeholder="Contraseña" required>
                                 <button class="navbar-btn btn-primary " type="submit" name="lIn">Log In</button>
                                 <button class="navbar-btn btn-primary " type="button" name="register"
-                                        onclick="location.href = ''">Register
+                                        onclick="location.href = '{% url "redirect" %}'">Register
                                 </button>
                             </form>
                         {% endif %}
@@ -126,10 +126,6 @@
                                             class="caret"></span></a>
                                     <ul class="dropdown-menu">
                                         <li role="separator" class="divider"></li>
-                                        <li><a href='#'>ABM Eventos</a></li>
-                                        {% if user.is_staff %}
-                                            <li><a href= '#'>Administrador</a></li>
-                                        {% endif %}
                                         <li role="separator" class="divider"></li>
                                     </ul>
                                 </li>
