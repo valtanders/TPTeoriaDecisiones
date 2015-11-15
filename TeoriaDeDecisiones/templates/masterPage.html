@@ -1,15 +1,15 @@
+{# Load the tag library #}
+{% load bootstrap3 %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript jquery=1 %}
+
+{# Display django.contrib.messages as Bootstrap alerts #}
+{% bootstrap_messages %}
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    {# Load the tag library #}
-    {% load bootstrap3 %}
-
-    {# Load CSS and JavaScript #}
-    {% bootstrap_css %}
-    {% bootstrap_javascript jquery=1 %}
-
-    {# Display django.contrib.messages as Bootstrap alerts #}
-    {% bootstrap_messages %}
     <meta charset="UTF-8">
     <title>Eventos</title>
     <link rel="stylesheet" type="text/css"
@@ -98,7 +98,7 @@
                                     onclick="location.href = '{% url "logOut" %}'">Log Out
                             </button>
                         {% else %}
-                            <form class="navbar-form" action="logIn" method="post">
+                            <form class="navbar-form" action="login" method="post">
                                 <label for="inputUsuario">Usuario:</label>
                                 <input type="text" id="inputUsuario" name="username" class="form-control"
                                        placeholder="Ingrese usuario" required autofocus>
@@ -107,7 +107,7 @@
                                        placeholder="Contraseña" required>
                                 <button class="navbar-btn btn-primary " type="submit" name="lIn">Log In</button>
                                 <button class="navbar-btn btn-primary " type="button" name="register"
-                                        onclick="location.href = '{% url "registro" %}'">Register
+                                        onclick="location.href = ''">Register
                                 </button>
                             </form>
                         {% endif %}
@@ -115,7 +115,7 @@
                     <div class="navbar-header">
                         <a class="navbar-brand" href="{% url 'index' %}"><h2 style="margin-top: 0px;"
                                                                              class="navbar-header">
-                            Creacion de Eventos</h2></a>
+                            Teoria de Decisiones</h2></a>
                     </div>
                     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav navbar-left ">
@@ -126,9 +126,9 @@
                                             class="caret"></span></a>
                                     <ul class="dropdown-menu">
                                         <li role="separator" class="divider"></li>
-                                        <li><a href= {% url 'eventos' %}>ABM Eventos</a></li>
+                                        <li><a href='#'>ABM Eventos</a></li>
                                         {% if user.is_staff %}
-                                            <li><a href= {% url 'administrador' %}>Administrador</a></li>
+                                            <li><a href= '#'>Administrador</a></li>
                                         {% endif %}
                                         <li role="separator" class="divider"></li>
                                     </ul>
@@ -139,9 +139,6 @@
                 </div>
             </nav>
         </nav>
-    </div>
-    <div id="izq">
-        <img src="static/Imagenes/publi.gif" border="0" width="180" height="800" alt="" class="img_ad">
     </div>
     <div id="contenido">
         {% block Contenido %}

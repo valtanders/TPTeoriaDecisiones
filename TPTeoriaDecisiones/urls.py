@@ -18,5 +18,6 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^$', 'TeoriaDeDecisiones.views.index',name='index'),
+    url(r'^login$', 'TeoriaDeDecisiones.views.user_login', name='login'),
     url(r'^admin/', include(admin.site.urls)),
 ]
