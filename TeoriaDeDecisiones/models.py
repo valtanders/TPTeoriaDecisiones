@@ -19,4 +19,4 @@ class Consecuencia(models.Model):
 
 class Lista():
     alternativas = []
-    consecencias = []
+    consecuencias = []

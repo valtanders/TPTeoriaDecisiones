@@ -10,9 +10,7 @@ from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
 from TeoriaDeDecisiones.models import Lista
 
-
-listaAlter = []
-listaConse = []
+lista = Lista
 
 @csrf_exempt
 def nuevo_usuario(request):
@@ -85,13 +83,14 @@ def redirect_principal(request):
 @csrf_exempt
 def ingresar_datos(request):
     if request.method == "POST":
-        if request.POST["txt_alternativa"] != "":
-            listaAlter.append(request.POST['txt_alternativa'])
-            i = 1
-        else:
-            listaConse.append(request.POST['txt_consecuencia'])
+        if request.POST["txt_alternativa"]:
+            lista.alternativas.append(request.POST['txt_alternativa'])
 
-    return render_to_response('principal.html', {'user': request.user, 'alt': listaAlter, 'con': listaConse})
+        else:
+            lista.consecuencias.append(request.POST['txt_consecuencia'])
+
+
+    return render_to_response('principal.html', {'user': request.user, 'alt': lista.alternativas, 'con': lista.consecuencias})
 
 
 
