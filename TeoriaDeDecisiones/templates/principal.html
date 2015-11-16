@@ -1,47 +1,110 @@
 {% extends 'masterPage.html' %}
+{% block Head %}
+    <script>
+
+        $(document).ready(function () {
+            $('#idGenerarTabla').click(function () {
+                $('#divTabla').html("");
+                var tabla = $('<table id="example" class="dataTable" cellspacing="0" width="100%">').appendTo($('#divTabla'));
+                var thead = $('<thead>').appendTo(tabla);
+                var tr = $('<tr>').appendTo(thead);
+                for (var i = 0; i <= $('#cantConsecuencias').val(); i++) {
+                    if (i == 0) {
+                        $('<th></th>').appendTo(tr);
+                    } else {
+                        $('<th>C' + i + ':</th>').appendTo(tr);
+                    }
+                }
+                ;
+                $('<tbody id="tbody">').appendTo(tabla);
+
+                for (var j = 1; j <= $('#cantAlternativas').val(); j++) {
+                    var trb = $('<tr>').appendTo($('#tbody'));
+                    $('<td>').text('A:' + j).appendTo(trb);
+                    for (var i = 0; i < $('#cantConsecuencias').val(); i++) {
+                        var inpu = $('<td>').appendTo(trb);
+                        $('<input id="' + (j - 1) + i + '" type="text">').appendTo(inpu);
+                    }
+                    ;
+                }
+                ;
+
+            });
+
+        });
+        function tor() {
+
+
+            $('<td>').text("prueba").appendTo(tr);
+
+
+        }
+        ;
+
+        function crearTabla() {
+
+
+            var tabla = $('<table id="example" class="dataTable" cellspacing="0" width="100%">').appendTo($('#divTabla'));
+            var thead = $('<thead>').appendTo(tabla);
+            var tr = $('<tr>').appendTo(thead);
+            $('<th>Fecha Y Hora</th>').appendTo(tr);
+            $('<th>Precio</th>').appendTo(tr);
+            $('<th>Duracion</th>').appendTo(tr);
+            $('<th>Cine</th>').appendTo(tr);
+            $('<th>Sala</th>').appendTo(tr);
+            $('<th>Pelicula</th>').appendTo(tr);
+            //$('<th>Butacas Disponibles</th>').appendTo(tr);
+            $('<th>Accion</th>').appendTo(tr);
+            var tfoot = $('<tfoot>').appendTo(tabla);
+            var trf = $('<tr>').appendTo(tfoot);
+            $('<th>Fecha Y Hora</th>').appendTo(trf);
+            $('<th>Precio</th>').appendTo(trf);
+            $('<th>Duracion</th>').appendTo(trf);
+            $('<th>Cine</th>').appendTo(trf);
+            $('<th>Sala</th>').appendTo(trf);
+            $('<th>Pelicula</th>').appendTo(trf);
+            //$('<th>Butacas Disponibles</th>').appendTo(trf);
+            $('<th>Accion</th>').appendTo(trf);
+            $('<tbody id="tbody">').appendTo(tabla);
+        }
+        ;
+
+    </script>
+{% endblock %}
 
 {% block Contenido %}
-    <div class="row">
-        <div class="col-md-6 col-sm-offset-3">
-            <div class="page-header">
-                <h1>Ingreso de Datos</h1>
-            </div>
-            <form method="post" action="inputDatos">
-                {% csrf_token %}
-                <div class="col-md-12">
-                    <div class="form-group col-md-6">
-                        <label for="input_alternativa">Altenativas: </label>
-                        <input type="text" name="txt_alternativa" value="" id="id_txt_alternativa" class="form-control"
-                               size="20" autofocus>
-                        <br>
-                        <button id="id_btn_alternativa" class="btn btn-primary " type="submit"
-                                name="ingresar_alternativa">Ingresar
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="form-group col-md-6">
-                        <label for="input_consecuencia">Apellido: </label>
-                        <input type="text" name="txt_consecuencia" value="" id="id_txt_consecuencia"
-                               class="form-control"
-                               size="20">
-                        <br>
-                        <button id="id_btn_consecuencia" class="btn btn-primary " type="submit"
-                                name="ingresar_consecuencia" >Ingresar
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                        <button id="confirmar" class="btn btn-primary " type="button" name="btn_confirmar"  onclick="location.href = '{% url "calcular" %}'">Confirmar
-                            Datos
-                        </button>
-                </div>
-                <br><br>
-                <h3 id="error1" align="center">{{ alt }}</h3>
-                <br><br>
-                <h3 id="error2" align="center">{{ con }}</h3>
-            </form>
+    <div>
+        <div class="page-header">
+            <h1>Ingreso de Datos</h1>
         </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="col-md-12">
+                <div class="form-group col-md-6">
+                    <label for="input_alternativa">Cantidad de Altenativas: </label>
+                    <input type="text" name="txt_alternativa" value="" id="cantAlternativas" class="form-control"
+                           size="5" autofocus>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="input_consecuencia">Cantidad de Consecuencias: </label>
+                    <input type="text" name="txt_consecuencia" value="" id="cantConsecuencias"
+                           class="form-control"
+                           size="5">
+                </div>
+                <div class="form-group col-md-6">
+                    <button id="idGenerarTabla" class="btn btn-primary " type="button"
+                            name="generarTabla">Generar
+                        Tabla
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <button id="confirmar" class="btn btn-primary " type="button" name="btn_confirmar"
+                        onclick="location.href = '{% url "calcular" %}'">Confirmar
+                    Datos
+                </button>
+            </div>
+            <div id="divTabla"></div>
+        </form>
     </div>
-
 {% endblock %}
