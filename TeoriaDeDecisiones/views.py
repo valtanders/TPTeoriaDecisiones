@@ -71,6 +71,8 @@ def index(request):
 
 @csrf_exempt
 def user_logout(request):
+    del lista.consecuencias[-1]
+    del lista.alternativas[-1]
     logout(request)
     return render_to_response('index.html')
 
@@ -84,10 +86,12 @@ def redirect_principal(request):
 def ingresar_datos(request):
     if request.method == "POST":
         if request.POST["txt_alternativa"]:
-            lista.alternativas.append(request.POST['txt_alternativa'])
+            aux = request.POST['txt_alternativa']
+            lista.alternativas.append(aux)
 
         else:
-            lista.consecuencias.append(request.POST['txt_consecuencia'])
+            aux = request.POST['txt_consecuencia']
+            lista.consecuencias.append(aux)
 
 
     return render_to_response('principal.html', {'user': request.user, 'alt': lista.alternativas, 'con': lista.consecuencias})
