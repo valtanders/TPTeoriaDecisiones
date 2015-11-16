@@ -6,12 +6,12 @@
             <div class="page-header">
                 <h1>Ingreso de Datos</h1>
             </div>
-            <form action="inputDatos">
+            <form method="post" action="inputDatos">
                 {% csrf_token %}
                 <div class="col-md-12">
                     <div class="form-group col-md-6">
                         <label for="input_alternativa">Altenativas: </label>
-                        <input type="text" name="txt_alterativa" value="" id="id_txt_alternativa" class="form-control"
+                        <input type="text" name="txt_alternativa" value="" id="id_txt_alternativa" class="form-control"
                                size="20" autofocus>
                         <br>
                         <button id="id_btn_alternativa" class="btn btn-primary " type="submit"
@@ -36,7 +36,9 @@
                             Datos
                         </button>
                 </div>
+                <br><br>
                 <h3 id="error" align="center">{{ alt }}</h3>
+                <br><br>
                 <h3 id="error" align="center">{{ con }}</h3>
             </form>
         </div>
