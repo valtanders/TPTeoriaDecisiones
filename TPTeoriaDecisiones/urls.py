@@ -23,7 +23,5 @@ urlpatterns = [
     url(r'^redirect$', 'TeoriaDeDecisiones.views.redirect_registro', name='redirect'),
     url(r'^logout$', 'TeoriaDeDecisiones.views.user_logout', name='logout'),
     url(r'^principal$', 'TeoriaDeDecisiones.views.redirect_principal', name='principal'),
-    url(r'^inputDatos$', 'TeoriaDeDecisiones.views.ingresar_datos', name='inputDatos'),
-    url(r'^calular$', 'TeoriaDeDecisiones.views.calcula_datos', name='calcular'),
     url(r'^admin', include(admin.site.urls)),
 ]

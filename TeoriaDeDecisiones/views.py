@@ -3,14 +3,12 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, render_to_response
-from django.core.cache import cache
+
 
 # Create your views here.
 from django.template import RequestContext
 from django.views.decorators.csrf import csrf_exempt
-from TeoriaDeDecisiones.models import Lista
 
-lista = Lista
 
 @csrf_exempt
 def nuevo_usuario(request):
@@ -71,8 +69,6 @@ def index(request):
 
 @csrf_exempt
 def user_logout(request):
-    del lista.consecuencias[-1]
-    del lista.alternativas[-1]
     logout(request)
     return render_to_response('index.html')
 
@@ -82,23 +78,3 @@ def redirect_principal(request):
     return render_to_response('principal.html', context_instance=RequestContext(request))
 
 
-@csrf_exempt
-def ingresar_datos(request):
-    if request.method == "POST":
-        if request.POST["txt_alternativa"]:
-            aux = request.POST['txt_alternativa']
-            lista.alternativas.append(aux)
-
-        else:
-            aux = request.POST['txt_consecuencia']
-            lista.consecuencias.append(aux)
-
-
-    return render_to_response('principal.html', {'user': request.user, 'alt': lista.alternativas, 'con': lista.consecuencias})
-
-
-
-
-@csrf_exempt
-def calcula_datos(request):
-    a = "hola"

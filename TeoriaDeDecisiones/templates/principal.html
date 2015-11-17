@@ -1,71 +1,563 @@
 {% extends 'masterPage.html' %}
 {% block Head %}
-    <script>
+    <style>
+        .criteriosDecision {
 
+        }
+
+        .verificaInput {
+
+        }
+    </style>
+    <script>
+        var resultados = [];
+        resultados[0] = "0";
+        resultados[1] = "0";
+        resultados[2] = "0";
+        resultados[3] = "0";
+        resultados[4] = "0";
         $(document).ready(function () {
             $('#idGenerarTabla').click(function () {
-                $('#divTabla').html("");
-                var tabla = $('<table id="example" class="dataTable" cellspacing="0" width="100%">').appendTo($('#divTabla'));
-                var thead = $('<thead>').appendTo(tabla);
-                var tr = $('<tr>').appendTo(thead);
-                for (var i = 0; i <= $('#cantConsecuencias').val(); i++) {
-                    if (i == 0) {
-                        $('<th></th>').appendTo(tr);
+                var cA = $('#cantAlternativas').val();
+                var cC = $('#cantConsecuencias').val();
+                if (cA == "" || cC == "") {
+                    alert('Debe introducir cantidad de Alternativas y Consecuencias...');
+                } else {
+                    if (cA > 0 && cC > 0) {
+                        crearTabla();
+                        $('#criteriosDecision').css('display', 'inline');
+                        $('#id_calcular').css('display', 'inline');
                     } else {
-                        $('<th>C' + i + ':</th>').appendTo(tr);
+                        alert('No se admiten valores negativos para Alternativas y/o Consecuencias...');
                     }
                 }
-                ;
-                $('<tbody id="tbody">').appendTo(tabla);
-
-                for (var j = 1; j <= $('#cantAlternativas').val(); j++) {
-                    var trb = $('<tr>').appendTo($('#tbody'));
-                    $('<td>').text('A:' + j).appendTo(trb);
-                    for (var i = 0; i < $('#cantConsecuencias').val(); i++) {
-                        var inpu = $('<td>').appendTo(trb);
-                        $('<input id="' + (j - 1) + i + '" type="text">').appendTo(inpu);
-                    }
-                    ;
-                }
-                ;
-
             });
-
+            $('#id_calcular').click(function () {
+                var opcion;
+                if ( $('#rd_ganancia').is(':checked')) {
+                    opcion = $('#rd_ganancia').val();
+                }else{
+                     opcion = $('#rd_costo').val();
+                }
+                if (validarDatos()) {
+                    if (validarCriteriosDecision()) {
+                        if ($('#optimista').is(':checked')) {
+                            optimista(opcion);
+                        }
+                        if ($('#pesimista').is(':checked')) {
+                            pesimista(opcion);
+                        }
+                        if ($('#hurwicz').is(':checked')) {
+                            hurwicz(opcion, $('#alfaHurwicz').val());
+                        }
+                        if ($('#savage').is(':checked')) {
+                            savage(opcion);
+                        }
+                        if ($('#laplace').is(':checked')) {
+                            laplace(opcion);
+                        }
+                        crearTablaRespuesta();
+                    } else {
+                        alert('Debe seleccionar algun criterio de Decision...');
+                    }
+                } else {
+                    alert('Faltan datos en la Tabla. Por favor verifique que este completa...')
+                }
+            });
         });
-        function tor() {
 
 
-            $('<td>').text("prueba").appendTo(tr);
-
-
+        function optimistaGanancia() {
+            var alt = "";
+            var max;
+            var maxF;
+            var id = "#";
+            for (var i = 0; i < $('#cantAlternativas').val(); i++) {
+                for (var j = 0; j < $('#cantConsecuencias').val(); j++) {
+                    id += i;
+                    id += j;
+                    if (j == 0) {
+                        maxF = parseInt($(id).val());
+                    }
+                    if (parseInt($(id).val()) >= maxF) {
+                        maxF = parseInt($(id).val());
+                    }
+                    id = "#";
+                }
+                if (max == null) {
+                    max = maxF;
+                    alt = (i + 1);
+                }
+                if (maxF >= max) {
+                    max = maxF;
+                    alt = (i + 1);
+                }
+            }
+            return "Alternativa: " + alt + " valor: " + max;
         }
         ;
 
+        function optimistaCosto() {
+            var alt = "";
+            var min;
+            var minF;
+            var id = "#";
+            for (var i = 0; i < $('#cantAlternativas').val(); i++) {
+                for (var j = 0; j < $('#cantConsecuencias').val(); j++) {
+                    id += i;
+                    id += j;
+                    if (j == 0) {
+                        minF = parseInt($(id).val());
+                    }
+                    if (parseInt($(id).val()) <= minF) {
+                        minF = parseInt($(id).val());
+                    }
+                    id = "#";
+                }
+                if (min == null) {
+                    min = minF;
+                    alt = (i + 1);
+                }
+                if (minF <= min) {
+                    min = minF;
+                    alt = (i + 1);
+                }
+            }
+            return "Alternativa: " + alt + " valor: " + min;
+        }
+        ;
+
+        function optimista(criterio) {
+            var resp;
+            if (criterio == 'ganancia') {
+                resp = optimistaGanancia();
+            } else {
+                resp = optimistaCosto();
+            }
+            resultados[0] = resp;
+            return resp;
+        }
+
+        function pesimistaGanancia() {
+            var alt = "";
+            var max;
+            var minF;
+            var id = "#";
+            for (var i = 0; i < $('#cantAlternativas').val(); i++) {
+                for (var j = 0; j < $('#cantConsecuencias').val(); j++) {
+                    id += i;
+                    id += j;
+                    if (j == 0) {
+                        minF = parseInt($(id).val());
+                    }
+                    if (parseInt($(id).val()) <= minF) {
+                        minF = parseInt($(id).val());
+                    }
+                    id = "#";
+                }
+                if (max == null) {
+                    max = minF;
+                    alt = (i + 1);
+                }
+                if (minF >= max) {
+                    max = minF;
+                    alt = (i + 1);
+                }
+            }
+            return "Alternativa: " + alt + " valor: " + max;
+        }
+        ;
+
+        function pesimistaCosto() {
+            var alt = "";
+            var min;
+            var maxF;
+            var id = "#";
+            for (var i = 0; i < $('#cantAlternativas').val(); i++) {
+                for (var j = 0; j < $('#cantConsecuencias').val(); j++) {
+                    id += i;
+                    id += j;
+                    if (j == 0) {
+                        maxF = parseInt($(id).val());
+                    }
+                    if (parseInt($(id).val()) >= maxF) {
+                        maxF = parseInt($(id).val());
+                    }
+                    id = "#";
+                }
+                if (min == null) {
+                    min = maxF;
+                    alt = (i + 1);
+                }
+                if (maxF <= min) {
+                    min = maxF;
+                    alt = (i + 1);
+                }
+            }
+            return "Alternativa: " + alt + " valor: " + min;
+        }
+        ;
+
+        function pesimista(criterio) {
+            var resp;
+            if (criterio == 'ganancia') {
+                resp = pesimistaGanancia();
+            } else {
+                resp = pesimistaCosto();
+            }
+            resultados[1] = resp;
+            return resp;
+        }
+
+        function laplaceGanancia() {
+            var alt = "";
+            var max;
+            var suma = 0;
+            var id = "#";
+            for (var i = 0; i < $('#cantAlternativas').val(); i++) {
+                for (var j = 0; j < $('#cantConsecuencias').val(); j++) {
+                    id += i;
+                    id += j;
+                    suma += parseInt($(id).val());
+                    id = "#";
+                }
+                if (max == null) {
+                    max = suma / $('#cantConsecuencias').val();
+                    alt = (i + 1);
+                }
+                if (suma / $('#cantConsecuencias').val() >= max) {
+                    max = suma / $('#cantConsecuencias').val();
+                    alt = (i + 1);
+                }
+                suma = 0;
+            }
+            return "Alternativa: " + alt + " valor: " + max;
+        }
+        ;
+
+        function laplaceCosto() {
+            var alt = "";
+            var min;
+            var suma = 0;
+            var id = "#";
+            for (var i = 0; i < $('#cantAlternativas').val(); i++) {
+                for (var j = 0; j < $('#cantConsecuencias').val(); j++) {
+                    id += i;
+                    id += j;
+                    suma += parseInt($(id).val());
+                    id = "#";
+                }
+                if (min == null) {
+                    min = suma / $('#cantConsecuencias').val();
+                    alt = (i + 1);
+                }
+                if (suma / $('#cantConsecuencias').val() <= min) {
+                    min = suma / $('#cantConsecuencias').val();
+                    alt = (i + 1);
+                }
+                suma = 0;
+            }
+            return "Alternativa: " + alt + " valor: " + min;
+        }
+        ;
+
+        function laplace(criterio) {
+            var resp;
+            if (criterio == 'ganancia') {
+                resp = laplaceGanancia();
+            } else {
+                resp = laplaceCosto();
+            }
+            resultados[4] = resp;
+            return resp;
+        }
+
+        function mayorColumna(columna) {
+            var maxC = 0;
+            var id = "#";
+            for (var i = 0; i < $('#cantAlternativas').val(); i++) {
+                id += i;
+                id += columna;
+                if (i == 0) {
+                    maxC = parseInt($(id).val());
+                }
+                if (parseInt($(id).val()) >= maxC) {
+                    maxC = parseInt($(id).val());
+                }
+                id = "#";
+            }
+            return maxC;
+        }
+
+        function savageGanancia() {
+            var alt = "";
+            var maxC;
+            var minColumaFinal;
+            var columna = [];
+            var id = "#";
+            for (var j = 0; j < $('#cantConsecuencias').val(); j++) {
+                maxC = mayorColumna(j);
+                for (var i = 0; i < $('#cantAlternativas').val(); i++) {
+                    id += i;
+                    id += j;
+                    if (j == 0) {
+                        columna[i] = maxC - parseInt($(id).val());
+                    }
+                    if (maxC - parseInt($(id).val()) >= columna[i]) {
+                        columna[i] = maxC - parseInt($(id).val());
+                    }
+                    id = "#";
+                }
+            }
+            minColumaFinal = columna[0];
+            for (var i = 0; i < columna.length; i++) {
+                if (columna[i] <= minColumaFinal) {
+                    minColumaFinal = columna[i];
+                    alt = (i + 1);
+                }
+            }
+            return "Alternativa: " + alt + " valor: " + minColumaFinal;
+        }
+        ;
+
+        function menorColumna(columna) {
+            var minC = 0;
+            var id = "#";
+            for (var i = 0; i < $('#cantAlternativas').val(); i++) {
+                id += i;
+                id += columna;
+                if (i == 0) {
+                    minC = parseInt($(id).val());
+                }
+                if (parseInt($(id).val()) <= minC) {
+                    minC = parseInt($(id).val());
+                }
+                id = "#";
+            }
+            return minC;
+        }
+
+        function savageCosto() {
+            var alt = "";
+            var minC;
+            var minColumaFinal;
+            var columna = [];
+            var id = "#";
+            for (var j = 0; j < $('#cantConsecuencias').val(); j++) {
+                minC = menorColumna(j);
+                for (var i = 0; i < $('#cantAlternativas').val(); i++) {
+                    id += i;
+                    id += j;
+                    if (j == 0) {
+                        columna[i] = parseInt($(id).val()) - minC;
+                    }
+                    if (parseInt($(id).val()) - minC >= columna[i]) {
+                        columna[i] = parseInt($(id).val()) - minC;
+                    }
+                    id = "#";
+                }
+            }
+            minColumaFinal = columna[0];
+            for (var i = 0; i < columna.length; i++) {
+                if (columna[i] <= minColumaFinal) {
+                    minColumaFinal = columna[i];
+                    alt = (i + 1);
+                }
+            }
+            return "Alternativa: " + alt + " valor: " + minColumaFinal;
+        }
+        ;
+
+        function savage(criterio) {
+            var resp;
+            if (criterio == 'ganancia') {
+                resp = savageGanancia();
+            } else {
+                resp = savageCosto();
+            }
+            resultados[3] = resp;
+            return resp;
+        }
+
+        function mayorFila(fila) {
+            var maxF = 0;
+            var id = "#";
+            for (var i = 0; i < $('#cantConsecuencias').val(); i++) {
+                id += fila;
+                id += i;
+                if (i == 0) {
+                    maxF = parseInt($(id).val());
+                }
+                if (parseInt($(id).val()) >= maxF) {
+                    maxF = parseInt($(id).val());
+                }
+                id = "#";
+            }
+            return maxF;
+        }
+        function menorFila(fila) {
+            var minF = 0;
+            var id = "#";
+            for (var i = 0; i < $('#cantConsecuencias').val(); i++) {
+                id += fila;
+                id += i;
+                if (i == 0) {
+                    minF = parseInt($(id).val());
+                }
+                if (parseInt($(id).val()) <= minF) {
+                    minF = parseInt($(id).val());
+                }
+                id = "#";
+            }
+            return minF;
+        }
+
+        function hurwiczGanancia(alfa) {
+            var alt = "";
+            var maxF;
+            var minF;
+            var maxColumaFinal;
+            var columna = [];
+            for (var i = 0; i < $('#cantAlternativas').val(); i++) {
+                maxF = mayorFila(i);
+                minF = menorFila(i);
+                columna[i] = alfa * maxF + (1 - alfa) * minF;
+            }
+            maxColumaFinal = columna[0];
+            for (var i = 0; i < columna.length; i++) {
+                if (columna[i] >= maxColumaFinal) {
+                    maxColumaFinal = columna[i];
+                    alt = (i + 1);
+                }
+            }
+            return "Alternativa: " + alt + " valor: " + maxColumaFinal;
+        }
+        ;
+
+
+        function hurwiczCosto(alfa) {
+            var alt = "";
+            var maxF;
+            var minF;
+            var minColumaFinal;
+            var columna = [];
+            var id = "#";
+            for (var i = 0; i < $('#cantAlternativas').val(); i++) {
+                maxF = mayorFila(i);
+                minF = menorFila(i)
+                columna[i] = alfa * maxF + (1 - alfa) * minF;
+            }
+            minColumaFinal = columna[0];
+            for (var i = 0; i < columna.length; i++) {
+                if (columna[i] <= minColumaFinal) {
+                    minColumaFinal = columna[i];
+                    alt = (i + 1);
+                }
+            }
+            return "Alternativa: " + alt + " valor: " + minColumaFinal;
+        }
+        ;
+
+        function hurwicz(criterio, alfa) {
+            var resp;
+            if (criterio == 'ganancia') {
+                resp = hurwiczGanancia(alfa);
+            } else {
+                resp = hurwiczCosto(alfa);
+            }
+            resultados[2] = resp;
+            return resp;
+        }
+
+
+        function validarCriteriosDecision() {
+            var resp = false;
+            $('.criteriosDecision').each(function () {
+                if ($(this).is(':checked')) {
+                    resp = true;
+                    if (this.id == 'hurwicz') {
+                        if ($('#alfaHurwicz').val() <= 0 || $('#alfaHurwicz').val() == "" || $('#alfaHurwicz').val() >= 1) {
+                            resp = false;
+                            alert('Debe seleccionar un valor valido para el parametro Alfa...');
+                        }
+                    }
+                }
+            });
+            return resp;
+        }
+
+        function validarDatos() {
+            var resp = true;
+            $('.verificaInput').each(function () {
+                if ($(this).val() == "") {
+                    resp = false;
+                }
+            });
+            return resp;
+        }
+
+
         function crearTabla() {
-
-
-            var tabla = $('<table id="example" class="dataTable" cellspacing="0" width="100%">').appendTo($('#divTabla'));
+            $('#divTabla').html("");
+            $('#divTablaRespuesta').html("");
+            var div = $(' <div style="width: 100%; overflow: scroll; height: 250px;">').appendTo($('#divTabla'));
+            var tabla = $('<table id="example" class="dataTable" border="1" cellspacing="0" width="100%">').appendTo(div);
             var thead = $('<thead>').appendTo(tabla);
             var tr = $('<tr>').appendTo(thead);
-            $('<th>Fecha Y Hora</th>').appendTo(tr);
-            $('<th>Precio</th>').appendTo(tr);
-            $('<th>Duracion</th>').appendTo(tr);
-            $('<th>Cine</th>').appendTo(tr);
-            $('<th>Sala</th>').appendTo(tr);
-            $('<th>Pelicula</th>').appendTo(tr);
-            //$('<th>Butacas Disponibles</th>').appendTo(tr);
-            $('<th>Accion</th>').appendTo(tr);
-            var tfoot = $('<tfoot>').appendTo(tabla);
-            var trf = $('<tr>').appendTo(tfoot);
-            $('<th>Fecha Y Hora</th>').appendTo(trf);
-            $('<th>Precio</th>').appendTo(trf);
-            $('<th>Duracion</th>').appendTo(trf);
-            $('<th>Cine</th>').appendTo(trf);
-            $('<th>Sala</th>').appendTo(trf);
-            $('<th>Pelicula</th>').appendTo(trf);
-            //$('<th>Butacas Disponibles</th>').appendTo(trf);
-            $('<th>Accion</th>').appendTo(trf);
+            for (var i = 0; i <= $('#cantConsecuencias').val(); i++) {
+                if (i == 0) {
+                    $('<th></th>').appendTo(tr);
+                } else {
+                    $('<th>C' + i + ':</th>').appendTo(tr);
+                }
+            }
+            ;
             $('<tbody id="tbody">').appendTo(tabla);
+            for (var j = 1; j <= $('#cantAlternativas').val(); j++) {
+                var trb = $('<tr>').appendTo($('#tbody'));
+                $('<td>').text('A:' + j).appendTo(trb);
+                for (var i = 0; i < $('#cantConsecuencias').val(); i++) {
+                    var inpu = $('<td>').appendTo(trb);
+                    $('<input id="' + (j - 1) + i + '" type="number" class="verificaInput">').appendTo(inpu);
+                }
+                ;
+            }
+            ;
+        }
+        ;
+        function crearTablaRespuesta() {
+            $('#divTablaRespuesta').html("");
+            var tablaR = $('<table id="respuesta" class="dataTable" border="1" cellspacing="0" width="100%">').appendTo($('#divTablaRespuesta'));
+            var theadR = $('<thead>').appendTo(tablaR);
+            var trR = $('<tr>').appendTo(theadR);
+            $('<th></th>').appendTo(trR);
+            $('<th>Resultados:</th>').appendTo(trR);
+            $('<tbody id="tbody">').appendTo(tablaR);
+            var trb = $('<tr>').appendTo($('#tbody'));
+            if ($('#optimista').is(':checked')) {
+                var o = $('<td>').text('Optimista:').appendTo(trR);
+                $('<input id="o" value="' + resultados[0] + '" "type="text" readonly>').appendTo(o);
+            }
+
+            if ($('#pesimista').is(':checked')) {
+                var p = $('<td>').text('Pesimista:').appendTo(trR);
+                $('<input id="p" value="' + resultados[1] + '" type="text" readonly>').appendTo(p);
+            }
+
+            if ($('#hurwicz').is(':checked')) {
+                var h = $('<td>').text('Hurwicz:').appendTo(trR);
+                $('<input id="h" value="' + resultados[2] + '" type="text" readonly>').appendTo(h);
+            }
+
+            if ($('#savage').is(':checked')) {
+                var s = $('<td>').text('Savage:').appendTo(trR);
+                $('<input id="s" value="' + resultados[3] + '" type="text" readonly>').appendTo(s);
+            }
+
+            if ($('#laplace').is(':checked')) {
+                var l = $('<td>').text('Laplace:').appendTo(trR);
+                $('<input id="l" value="' + resultados[4] + '" type="text" readonly>').appendTo(l);
+            }
         }
         ;
 
@@ -75,19 +567,19 @@
 {% block Contenido %}
     <div>
         <div class="page-header">
-            <h1>Ingreso de Datos</h1>
+            <h1><center>Ingreso de Datos</center></h1>
         </div>
-        <form method="post">
+        <form>
             {% csrf_token %}
             <div class="col-md-12">
                 <div class="form-group col-md-6">
                     <label for="input_alternativa">Cantidad de Altenativas: </label>
-                    <input type="text" name="txt_alternativa" value="" id="cantAlternativas" class="form-control"
+                    <input type="number" name="txt_alternativa" value="" id="cantAlternativas" class="form-control"
                            size="5" autofocus>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="input_consecuencia">Cantidad de Consecuencias: </label>
-                    <input type="text" name="txt_consecuencia" value="" id="cantConsecuencias"
+                    <input type="number" name="txt_consecuencia" value="" id="cantConsecuencias"
                            class="form-control"
                            size="5">
                 </div>
@@ -98,13 +590,33 @@
                     </button>
                 </div>
             </div>
+            <div id="divTabla"></div>
+            <div id="criteriosDecision" style="display: none;">
+                <div class="page-header">
+                    <h3><center>Criterios de Decision bajo Condiciones de Incertidumbre </center></h3>
+                </div>
+                <div class="form-group col-md-6">
+                    <label class="radio-inline"><input id="rd_ganancia" type="radio" name="opcion" checked="true" value="ganancia">Ganancia</label>
+                    <label class="radio-inline"><input id="rd_costo" type="radio" name="opcion" value="costo">Costo</label>
+                </div>
+                <br>
+                <br>
+                <div class="form-group col-md-6">
+                    <input type="checkbox" name="chk_optimista" id="optimista" class="criteriosDecision">Optimista
+                    <input type="checkbox" name="chk_pesimista" id="pesimista" class="criteriosDecision">Pesimista
+                    <input type="checkbox" name="chk_hurwicz" id="hurwicz" class="criteriosDecision">Hurwicz
+                    Alfa:<input type="number" min="1" name="num_porcentajeHurwicz" id="alfaHurwicz"
+                                class="criteriosDecision">
+                    <input type="checkbox" name="chk_savage" id="savage" class="criteriosDecision">Savage
+                    <input type="checkbox" name="chk_laplace" id="laplace" class="criteriosDecision">Laplace
+                </div>
+            </div>
             <div class="col-md-12">
-                <button id="confirmar" class="btn btn-primary " type="button" name="btn_confirmar"
-                        onclick="location.href = '{% url "calcular" %}'">Confirmar
-                    Datos
+                <button id="id_calcular" class="btn btn-primary " type="button" name="btn_calcular"
+                        style="display: none;">Calcular
                 </button>
             </div>
-            <div id="divTabla"></div>
+            <div id="divTablaRespuesta"></div>
         </form>
     </div>
 {% endblock %}
